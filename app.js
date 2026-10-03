@@ -1,3 +1,4 @@
+import {countEvent} from './analytics.js';
 import {moonLightVector} from './moon-phase.js';
 import {displayDial,isPragueDial} from './dial-frame.js';
 import {demoMoment,momentURL,readMoment} from './moments.js';
@@ -216,7 +217,7 @@ $('dismissHint').onclick=()=>{$('firstVisitHint').hidden=true;try{localStorage.s
 document.querySelectorAll('[data-demo]').forEach(button=>button.onclick=()=>{
  try{
   const value={lat:Number($('lat').value),lon:Number($('lon').value),zone:$('zone').value};if(!validLocation(value))throw Error('Choose a valid location before starting a demo.');
-  const demo=demoMoment(button.dataset.demo,instant,value.lat,value.lon,value.zone);mode(false);instant=demo.date;localInput();$('speed').value='3600';demoEnd=+instant+86400000;playing=true;syncPlayback();$('demoDescription').textContent=demo.description+' One day plays in 24 seconds, then pauses.';$('message').textContent='';
+  const demo=demoMoment(button.dataset.demo,instant,value.lat,value.lon,value.zone);countEvent('demo-'+button.dataset.demo,'Start demo: '+button.textContent.trim());mode(false);instant=demo.date;localInput();$('speed').value='3600';demoEnd=+instant+86400000;playing=true;syncPlayback();$('demoDescription').textContent=demo.description+' One day plays in 24 seconds, then pauses.';$('message').textContent='';
   if(explaining)selectGuide(demo.part);$('firstVisitHint').hidden=true;try{localStorage.setItem(hintKey,'1')}catch{}
  }catch(error){$('message').textContent=error.message}
 });
@@ -226,7 +227,7 @@ $('shareMoment').onclick=async()=>{
   const value={lat:Number($('lat').value),lon:Number($('lon').value),zone:$('zone').value};if(!validLocation(value))throw Error('Choose a valid location before sharing.');
   mode(false);
   const link=momentURL(window.location.href,{...value,date:instant,location:$('location').value,useDST:$('dst').checked,part:explaining?selectedPart:null});
-  $('shareLink').value=link;$('shareFallback').hidden=true;
+  countEvent('share-moment','Share This Moment');$('shareLink').value=link;$('shareFallback').hidden=true;
   try{await navigator.clipboard.writeText(link);$('shareStatus').textContent='Link copied. It opens this location and time, paused.'}
   catch{$('shareFallback').hidden=false;$('shareLink').focus();$('shareLink').select();$('shareStatus').textContent='Copy the link below. It opens this location and time, paused.'}
  }catch(error){$('shareStatus').textContent=error.message}
