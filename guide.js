@@ -2,6 +2,16 @@ import {calculate} from './astro.js';
 
 const rad=Math.PI/180,wrap=(n,m)=>((n%m)+m)%m;
 const signs=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+// Invert ecliptic right ascension to find the ring sector on the true local meridian.
+// Use astronomical sidereal time, independent of Prague's display-frame rotation.
+export function zodiacOrientation(a,lat){
+ const sidereal=wrap(a.zodiacAngle/rad-270,360)*rad;
+ const longitude=wrap(Math.atan2(Math.sin(sidereal),Math.cos(sidereal)*Math.cos(23.44*rad))/rad,360);
+ const index=Math.floor(longitude/30),declination=Math.asin(Math.sin(23.44*rad)*Math.sin(longitude*rad))/rad;
+ return {sign:signs[index],west:signs[wrap(index-1,12)],east:signs[wrap(index+1,12)],longitude,
+  altitude:90-Math.abs(lat-declination),direction:declination>lat?'north':'south'};
+}
+
 function duration(hours){
  const minutes=Math.max(0,Math.round(hours*60));
  if(minutes===0)return 'less than a minute';
@@ -28,6 +38,9 @@ export function interpretClock({a,date,lat,lon,zone,place,standardOffset,civilOf
  const elongation=wrap(a.phase-180,360);
  const phase=elongation<10||elongation>=350?'near new Moon':elongation<80?'waxing crescent':elongation<100?'near first quarter':elongation<170?'waxing gibbous':elongation<190?'near full Moon':elongation<260?'waning gibbous':elongation<280?'near last quarter':'waning crescent';
  const longitude=wrap(a.sunLongitude,360),sign=signs[Math.floor(longitude/30)];
+ const meridian=zodiacOrientation(a,lat);
+ const zodiacSky=`The ${meridian.sign} sector of the zodiac is crossing the ${meridian.direction==='south'?'southern':'northern'} meridian, toward due ${meridian.direction}, about ${meridian.altitude.toFixed(0)}° above the horizon. Its neighboring ${meridian.west} sector is on the western side of the meridian; ${meridian.east} is on the eastern side. When facing south, west is to your right and east is to your left. These are the ring’s seasonal zodiac sectors, not exact positions of the modern constellations. This describes the sky’s geometry; daylight, clouds, and the horizon affect what you can actually see.`;
+
  const H=a.daylight/2,sunrise=12-H,sunset=12+H;
  const fmt=d=>new Intl.DateTimeFormat('en-US',{timeZone:zone,hour:'numeric',minute:'2-digit'}).format(d);
  // Anchor each modeled day to standard local midnight; calculate each day's
@@ -72,7 +85,7 @@ export function interpretClock({a,date,lat,lon,zone,place,standardOffset,civilOf
   sun:`The Sun is ${Math.abs(sunAlt).toFixed(1)}° ${sunAlt>=0?'above':'below'} the dial’s horizon and ${movement}. It lies in the ${state==='daylight'?'blue daylight':state==='twilight'?'red twilight':'black night'} region. Its declination is ${Math.abs(a.declination).toFixed(1)}° ${a.declination>=0?'north':'south'} of the equator, putting it ${Math.abs(a.declination)<1?'close to the equator circle':a.declination>0?'between the equator and Cancer circles':'between the equator and Capricorn circles'}. ${eventSummary}`,
   moon:`The Moon is ${phase}, ${Math.round(a.illumination*100)}% illuminated. Its position is ${Math.abs(moonAlt).toFixed(1)}° ${moonAlt>=0?'above':'below'} the modeled horizon. Its distance from the center places it at ${Math.abs(a.moonDeclination).toFixed(1)}° ${a.moonDeclination>=0?'north':'south'} declination. This describes its modeled position; daylight can still make it difficult to see.`,
   star:`For ${place}, the model’s local sidereal time is ${sidereal} (hours:minutes:seconds). Celestial objects with right ascension near ${sidereal.slice(0,5)} are crossing the local meridian. The star stays at the Aries–Pisces boundary as the ring turns. Use Explore to watch its slightly faster daily motion; at the same ordinary time tomorrow, sidereal time will be about four minutes later. This value follows the selected longitude and instant, without a daylight-saving adjustment.`,
-  zodiac:`The Sun currently lies in the ${sign} sector, ${(longitude%30).toFixed(1)}° into its 30° section. Its ecliptic longitude is ${longitude.toFixed(1)}°. This is the seasonal zodiac shown by the ring, rather than the boundaries of modern constellations. The ring’s current rotation places that sector beneath the Sun.`,
+  zodiac:`Someone born at this moment would have ${sign} as their Sun sign in the usual Western (tropical) zodiac. The Sun is ${(longitude%30).toFixed(1)}° into the ${sign} sector on the dial. ${zodiacSky}`,
   background:`At the Sun’s current position, the dial shows ${state}: ${state==='daylight'?'blue, above the horizon':state==='twilight'?'red, between the horizon and 18° below it':'black, more than 18° below the horizon'}. The modeled Sun is ${Math.abs(sunAlt).toFixed(1)}° ${sunAlt>=0?'above':'below'} the horizon at ${place}. ${eventSummary}`,
   hours:unequal,
   bohemian,
