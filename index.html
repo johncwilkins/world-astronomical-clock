@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><title>Prague Astronomical Clock (Orloj) — Interactive Simulator</title><meta name="description" content="Explore an interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Change the date and location, and watch its Sun, Moon, and zodiac ring move."><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><link rel="stylesheet" href="style.css"></head>
+<body class="clock-page">
+<header>Astronomical Clock<div class="header-actions"><button id="explainToggle" aria-pressed="false" aria-controls="explainPanel">Learn the dial</button><button id="reset">Front view</button><a class="header-link" href="./about.html">About</a></div></header>
+<main>
+<section id="stage" aria-label="Interactive astronomical clock"><div id="loading">Loading your clock…</div><p class="caption">Drag to tilt · Pinch or scroll to zoom</p></section>
+<aside aria-label="Clock menu">
+<div class="menu-anchor">
+<div class="location-heading"><label for="location">Location</label><button id="geo">Use my location</button></div>
+<select id="location"><option value="prague">Prague</option><option value="rome">Rome</option><option value="oslo">Oslo</option><option value="paris">Paris</option><option value="london">London</option><option value="reykjavik">Reykjavik</option><option value="cruzbay">Cruz Bay</option><option value="nyc">New York</option><option value="chicago">Chicago</option><option value="omaha">Omaha</option><option value="mexicocity">Mexico City</option><option value="denver">Denver</option><option value="la">Los Angeles</option><option value="vancouver">Vancouver</option><option value="honolulu">Honolulu</option><option value="tokyo">Tokyo</option><option value="seoul">Seoul</option><option value="mumbai">Mumbai</option><option value="karachi">Karachi</option><option value="helsinki">Helsinki</option><option value="custom">Custom coordinates</option></select>
+<h1 id="place" class="visually-hidden">Prague</h1>
+<div class="clock-readout"><div id="time"></div><button id="quickPause" hidden>Play</button></div><p id="date"></p>
+<nav class="menu-views" aria-label="Menu view"><button id="controlsView" class="active" aria-pressed="true" aria-controls="controlsPanel">Controls</button><button id="learnView" aria-pressed="false" aria-controls="explainPanel">Learn the dial</button></nav>
+</div>
+<div class="menu-body" id="menuBody">
+<section id="controlsPanel" aria-label="Clock controls">
+<div class="row time-mode"><button id="live" class="active">Live now</button><button id="explore">Set time / animate</button></div>
+<section id="exploreControls" hidden><label>Date & time at location<input id="datetime" type="datetime-local"></label><div class="row"><button id="back">−1 day</button><button id="play">Play</button><button id="forward">+1 day</button></div><label>Simulation speed<select id="speed"><option value="60">1 minute / second</option><option value="3600" selected>1 hour / second</option><option value="7200">2 hours / second</option><option value="14400">4 hours / second</option><option value="21600">6 hours / second</option><option value="43200">12 hours / second</option><option value="86400">1 day / second</option></select></label></section>
+<section class="demos" aria-label="Clock demos"><h2>Try a demo</h2><div class="demo-buttons"><button data-demo="summer">Summer day</button><button data-demo="winter">Winter day</button><button data-demo="equinox">Equinox</button><button data-demo="moon">Full Moon</button></div><p id="demoDescription" class="hint" aria-live="polite">A day in 24 seconds, at your selected location. Each demo pauses when finished.</p></section>
+<section id="firstVisitHint" class="first-visit" hidden aria-label="Getting started"><p>Want to understand what you’re seeing? Choose <strong>Learn the dial</strong>, then tap a clock part or select it from the list.</p><button id="dismissHint">Got it</button></section>
+<details id="locationDetails"><summary>Coordinates &amp; time zone</summary><div class="row"><label>Latitude<input id="lat" type="number" min="1" max="66" required value="50.08" step="0.0001"></label><label>Longitude<input id="lon" type="number" value="14.4208" step="0.0001"></label></div><label>Time zone<input id="zone" value="Europe/Prague"></label></details>
+<label class="toggle"><input id="dst" type="checkbox" checked>Use daylight saving time on dial</label>
+<p id="dstNote" class="hint" hidden>Prague’s dial stays on CET year-round. The digital time above includes daylight saving.</p>
+<dl><div><dt>Sun declination</dt><dd id="decl"></dd></div><div><dt>Moon illuminated</dt><dd id="phase"></dd></div><div><dt>Daylight duration</dt><dd id="daylight"></dd></div></dl>
+</section>
+<section id="explainPanel" hidden aria-label="How to read the clock">
+<h2 class="menu-title">How to read the clock</h2><p class="guide-intro">Tap a part of the clock to highlight it and see what it means, or choose a part below. Its reading follows the current time and location.</p>
+<label for="guideChoice">Choose a clock part</label>
+<select id="guideChoice"><option value="time">Gold hand &amp; ordinary time</option><option value="sun">Sun</option><option value="moon">Moon</option><option value="zodiac">Zodiac ring</option><option value="star">Star pointer</option><option value="background">Daylight, twilight &amp; night</option><option value="hours">Unequal daylight hours</option><option value="bohemian">Bohemian sunset hours</option><option value="earth">Earth atlas</option><option value="cancer">Cancer circle</option><option value="equator">Equator circle</option><option value="capricorn">Capricorn circle</option></select>
+<h2 id="explainTitle">Reading the clock</h2><p id="explainText">Choose a part to see what it means.</p><p class="reading-label">At the selected time</p><p id="explainValue"></p>
+</section>
+<p id="message" role="status"></p>
+<section class="share-section" aria-label="Share the clock"><button id="shareMoment">Share this moment</button><p id="shareStatus" class="hint" role="status"></p><label id="shareFallback" hidden>Link to this moment<input id="shareLink" type="text" readonly></label></section>
+</div>
+</aside>
+</main><script type="module" src="app.js"></script>
+</body>
+</html>
