@@ -54,3 +54,7 @@ label.toggle{display:flex;align-items:center;gap:10px;line-height:1.4}label.togg
  .clock-page #date{margin:0 0 8px}
  .caption{font-size:14px;bottom:8px;margin:6px 0}
 }
+
+/* Keep all five time controls together at phone and sidebar widths. */
+.clock-page .time-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.clock-page .time-steps button{font-size:12px;padding:10px 4px;min-height:44px;white-space:nowrap}

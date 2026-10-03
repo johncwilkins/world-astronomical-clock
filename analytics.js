@@ -31,6 +31,8 @@ if (enabled) {
     explore: ['explore-time', 'Explore time'],
     geo: ['use-my-location', 'Use my location'],
     back: ['previous-day', 'Previous day'],
+    backHour: ['previous-hour', 'Previous hour'],
+    forwardHour: ['next-hour', 'Next hour'],
     forward: ['next-day', 'Next day'],
     
     dismissHint: ['dismiss-hint', 'Dismiss first visit hint']
