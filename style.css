@@ -58,3 +58,7 @@ label.toggle{display:flex;align-items:center;gap:10px;line-height:1.4}label.togg
 /* Keep all five time controls together at phone and sidebar widths. */
 .clock-page .time-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .clock-page .time-steps button{font-size:12px;padding:10px 4px;min-height:44px;white-space:nowrap}
+
+/* Show the native calendar control clearly against the dark date field. */
+#datetime{color-scheme:dark}
+#datetime::-webkit-calendar-picker-indicator{filter:brightness(0) invert(1);opacity:1;cursor:pointer}
