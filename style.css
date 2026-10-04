@@ -63,11 +63,13 @@ label.toggle{display:flex;align-items:center;gap:10px;line-height:1.4}label.togg
 #datetime{color-scheme:dark}
 #datetime::-webkit-calendar-picker-indicator{filter:brightness(0) invert(1);opacity:1;cursor:pointer}
 
-/* Photographs of the Prague clock on the About page. */
-.about-clock-photos{display:grid;grid-template-columns:0.8fr 1.2fr;gap:22px;align-items:start;margin:24px 0}
-.about-clock-photos figure{margin:0;min-width:0}
-.about-clock-photos a{display:block}
-.about-clock-photos img{display:block;width:100%;height:auto;border:1px solid #475363;border-radius:8px}
-.about-clock-photos figcaption{margin-top:10px;font-size:14px;line-height:1.55;color:#bcc8d7}
+/* Compact photographs beside their context on the About page. */
+.about-clock-row{display:grid;grid-template-columns:190px minmax(0,1fr);gap:24px;align-items:start;margin:24px 0 30px}
+.about-clock-photo{margin:0;min-width:0;width:190px;max-width:100%}
+.about-clock-photo a{display:block}
+.about-clock-photo img{display:block;width:190px;max-width:100%;height:auto;border:1px solid #475363;border-radius:6px}
+.about-clock-photo figcaption{margin-top:8px;font-size:12px;line-height:1.5;color:#bcc8d7}
+.about-clock-copy p:first-child{margin-top:0}
 .about-main .about-clock-source{font-size:14px}
-@media(max-width:600px){.about-clock-photos{grid-template-columns:1fr;gap:26px}}
+@media(max-width:600px){.about-clock-row{grid-template-columns:110px minmax(0,1fr);gap:16px}.about-clock-photo,.about-clock-photo img{width:110px}.about-clock-copy p{font-size:14px;line-height:1.6}}
+@media(max-width:360px){.about-clock-row{grid-template-columns:90px minmax(0,1fr);gap:12px}.about-clock-photo,.about-clock-photo img{width:90px}}
