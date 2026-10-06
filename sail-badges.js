@@ -1,0 +1,3 @@
+// Shared logo ink and shapes for sails and mooring battle flags.
+export const BADGE_INKS=['vec3(.72,.025,.065)','vec3(.025,.23,.72)','vec3(.8,.5,.015)','vec3(.035,.48,.15)','vec3(.035,.045,.055)','vec3(.25,.32,.38)'];
+export const BADGE_SYMBOLS=['step(abs(q.x-q.y*.65),.14)*step(abs(q.y),.55)','max(step(abs(q.x),.13)*step(abs(q.y),.55),step(abs(q.y),.13)*step(abs(q.x),.55))','step(abs(abs(q.x)+abs(q.y)-.50),.12)','step(abs(q.y),.48)*max(step(abs(q.x+.34),.10),max(step(abs(q.x),.10),step(abs(q.x-.34),.10)))','max(step(abs(q.x-q.y),.11),step(abs(q.x+q.y),.11))*step(length(q),.55)','step(abs(length(q)-.4),.10)+step(length(q),.12)'];
