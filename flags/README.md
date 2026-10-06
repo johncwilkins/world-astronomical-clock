@@ -1,0 +1,1 @@
+National flag PNGs downloaded from https://flagcdn.com/w1280/{country-code}.png for the unlisted daily-city wallpaper. Country codes: us, eg, is, fi, no, gb, mx, pk, ca, it, in, kr, jp, cz, fr. Keeping these images local removes runtime dependence on the flag image service.

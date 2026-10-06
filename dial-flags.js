@@ -47,7 +47,18 @@ export function drawDialFlag(ctx, theme, size) {
   return true;
 }
 
-export function flagPixels(theme, size = 1024) {
+export async function flagPixels(theme, size = 1024) {
+  const country = /^country-(us|eg|is|fi|no|gb|mx|pk|ca|it|in|kr|jp|cz|fr)$/.exec(theme);
+  if (country) {
+    const img = new Image();
+    img.src = new URL(`./flags/${country[1]}.png`,import.meta.url).href;
+    await img.decode();
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img,0,0,size,size);
+    ctx.fillStyle = 'rgba(10,18,30,0.22)';ctx.fillRect(0,0,size,size);
+    return ctx.getImageData(0,0,size,size).data;
+  }
   if (!dialThemes.has(theme)) return null;
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
   const ctx = canvas.getContext('2d');
