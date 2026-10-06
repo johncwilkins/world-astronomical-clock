@@ -1,6 +1,7 @@
 // Count page views and named actions without sending clock coordinates or dates.
 const endpoint = 'https://worldastronomicalclock.goatcounter.com/count';
-const enabled = ['worldastronomicalclock.com', 'www.worldastronomicalclock.com'].includes(location.hostname);
+// Wallpaper reloads should not inflate visitor statistics.
+const enabled = ['worldastronomicalclock.com', 'www.worldastronomicalclock.com'].includes(location.hostname) && new URLSearchParams(location.search).get('desktop') !== '1';
 const pending = [];
 export function countEvent(path, title) {
   if (!enabled) return;

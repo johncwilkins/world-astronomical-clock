@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><title>Prague Astronomical Clock (Orloj) — Interactive Simulator</title><meta name="description" content="Explore an interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Change the date and location, and watch its Sun, Moon, and zodiac ring move."><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><link rel="stylesheet" href="style.css"><link rel="canonical" href="https://worldastronomicalclock.com/">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><title>Prague Astronomical Clock (Orloj) — Interactive Simulator</title><meta name="description" content="Explore an interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Change the date and location, and watch its Sun, Moon, and zodiac ring move."><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="./desktop.css?v=1"><link rel="canonical" href="https://worldastronomicalclock.com/">
 <meta name="robots" content="index,follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="World Astronomical Clock">
@@ -13,7 +13,7 @@
 <body class="clock-page">
 <header>Astronomical Clock<div class="header-actions"><button id="explainToggle" aria-pressed="false" aria-controls="explainPanel">Learn the dial</button><button id="reset">Front view</button><a class="header-link" href="./about.html">About</a></div></header>
 <main>
-<section id="stage" aria-label="Interactive astronomical clock"><div id="loading">Loading your clock…</div><p class="caption">Drag to tilt · Pinch or scroll to zoom</p></section>
+<section id="stage" aria-label="Interactive astronomical clock"><div id="loading">Loading your clock…</div><div id="desktopReadout" class="desktop-readout" hidden><div id="desktopTime"></div><div id="desktopDate"></div></div><p class="caption">Drag to tilt · Pinch or scroll to zoom</p></section>
 <aside aria-label="Clock menu">
 <div class="menu-anchor">
 <div class="location-heading"><label for="location">Location</label><button id="geo">Use my location</button></div>
@@ -40,9 +40,28 @@
 <h2 id="explainTitle">Reading the clock</h2><p id="explainText">Choose a part to see what it means.</p><p class="reading-label">At the selected time</p><p id="explainValue"></p>
 </section>
 <p id="message" role="status"></p>
+<section class="desktop-section" aria-label="Desktop wallpaper"><button id="desktopMode" aria-haspopup="dialog" aria-controls="desktopSettings">Desktop wallpaper</button><p class="hint">A live clock without menus, for your Windows desktop.</p></section>
 <section class="share-section" aria-label="Share the clock"><button id="shareMoment">Share this moment</button><p id="shareStatus" class="hint" role="status"></p><label id="shareFallback" hidden>Link to this moment<input id="shareLink" type="text" readonly></label></section>
 </div>
 </aside>
-</main><script type="module" src="app.js"></script>
+</main>
+<div id="desktopToolbar" class="desktop-toolbar" hidden><button id="desktopConfigure" aria-haspopup="dialog" aria-controls="desktopSettings">Wallpaper settings</button><button id="desktopExit">Exit desktop mode</button></div>
+<section id="desktopSettings" class="desktop-settings" role="dialog" aria-modal="true" aria-labelledby="desktopHeading" hidden>
+ <div class="desktop-settings-card">
+  <div class="desktop-settings-heading"><h2 id="desktopHeading">Desktop wallpaper</h2><button id="desktopClose" aria-label="Close wallpaper settings">×</button></div>
+  <p>A live clock with the menus hidden. Move your mouse to reveal settings. Your regular app windows cover it when used through Lively Wallpaper.</p>
+  <label>Location<select id="desktopLocation"></select></label>
+  <label>Clock size <output id="desktopSizeValue">80%</output><input id="desktopSize" type="range" min="30" max="95" step="1" value="80"></label>
+  <label>Position<select id="desktopPosition"><option value="left">Left</option><option value="center" selected>Center</option><option value="right">Right</option></select></label>
+  <label>Background<select id="desktopBackground"><option value="midnight">Midnight gradient</option><option value="black">Black</option><option value="slate">Slate blue</option></select></label>
+  <label class="toggle"><input id="desktopShowTime" type="checkbox">Show location, date &amp; time below the clock</label>
+  <p>For custom coordinates, set them in the normal clock menu first. The dial uses your current daylight-saving setting.</p>
+  <div class="desktop-actions"><button id="desktopEnter">Use desktop mode</button><button id="desktopCopy">Copy wallpaper link</button></div>
+  <p id="desktopStatus" role="status"></p>
+  <label id="desktopLinkFallback" hidden>Wallpaper link<input id="desktopLink" type="text" readonly></label>
+  <p>In Lively Wallpaper, choose <strong>Add wallpaper → URL</strong> and paste the copied link. It always opens at the current time.</p>
+ </div>
+</section>
+<script type="module" src="app.js?v=desktop-1"></script>
 </body>
 </html>

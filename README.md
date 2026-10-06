@@ -14,3 +14,18 @@ After testing, verify ownership of WorldAstronomicalClock.com, set it as the cus
 Share This Moment uses the current website address. Test a shared moment, About, model loading, and Use my location over HTTPS before switching the domain.
 
 This package contains all runtime files. No build step or IIS configuration is required. Third-party vendor software retains its existing license notices.
+
+## Desktop wallpaper
+
+Choose **Desktop wallpaper** near the bottom of the clock menu. Select a location,
+size, left/center/right placement, background, and optional digital readout.
+**Use desktop mode** previews it in the browser; **Copy wallpaper link** creates
+a URL that always opens live at the selected location. Paste that URL into
+Lively Wallpaper's Add wallpaper URL field to place it behind Windows apps.
+Moving the mouse reveals Wallpaper settings and Exit desktop mode. The settings
+dialog supports keyboard navigation and Escape to close.
+
+Wallpaper URLs include `desktop=1` and their location/layout, so they also work
+in Lively's separate browser profile. Shared moments continue to open paused
+in the normal interface. Desktop rendering is capped at 20 frames per second
+and a pixel ratio of 1.5. Wallpaper page loads are excluded from GoatCounter.

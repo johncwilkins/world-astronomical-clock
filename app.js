@@ -1,3 +1,4 @@
+import {initDesktop} from './desktop.js';
 import {countEvent} from './analytics.js';
 import {moonLightVector} from './moon-phase.js';
 import {displayDial,isPragueDial} from './dial-frame.js';
@@ -204,12 +205,12 @@ $('learnView').onclick=()=>setLearning(true);
 $('controlsView').onclick=()=>setLearning(false);
 $('guideChoice').onchange=()=>selectGuide($('guideChoice').value);
 // A shared link takes precedence over the remembered place and opens paused.
-const sharedMoment=readMoment(window.location.search);
+const sharedMoment=new URLSearchParams(window.location.search).get('desktop')==='1'?null:readMoment(window.location.search);
 if(sharedMoment){
  const saved=locations[sharedMoment.location],matches=saved&&Math.abs(saved[1]-sharedMoment.lat)<.00001&&Math.abs(saved[2]-sharedMoment.lon)<.00001&&saved[3]===sharedMoment.zone;
  $('location').value=matches?sharedMoment.location:'custom';$('lat').value=sharedMoment.lat;$('lon').value=sharedMoment.lon;$('zone').value=sharedMoment.zone;acceptedLatitude=sharedMoment.lat;instant=sharedMoment.date;$('dst').checked=sharedMoment.useDST;mode(false);rememberLocation();
  if(sharedMoment.part){$('explainToggle').onclick();selectGuide(sharedMoment.part)}
-}else if(new URLSearchParams(window.location.search).has('at'))$('message').textContent='That shared moment has invalid time or location details. Showing your usual clock instead.';
+}else if(new URLSearchParams(window.location.search).has('at')&&new URLSearchParams(window.location.search).get('desktop')!=='1')$('message').textContent='That shared moment has invalid time or location details. Showing your usual clock instead.';
 $('locationDetails').open=$('location').value==='custom';
 const hintKey='astronomical-clock.hint-dismissed';
 try{$('firstVisitHint').hidden=localStorage.getItem(hintKey)==='1'}catch{$('firstVisitHint').hidden=false}
@@ -244,4 +245,27 @@ renderer.domElement.addEventListener('pointerup',e=>{
  }
 });
 
-function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-previous)/1000,.25);previous=now;if(live)instant=new Date();else if(playing){instant=new Date(+instant+dt*+$('speed').value*1000);if(demoEnd!==null&&+instant>=demoEnd){instant=new Date(demoEnd);demoEnd=null;playing=false;syncPlayback();localInput()}}try{let lat=+$('lat').value,lon=+$('lon').value;if(!Number.isFinite(lat)||lat<1||lat>66||!Number.isFinite(lon)||Math.abs(lon)>180)throw Error('Use a latitude from 1° to 66° north and longitude from −180° to 180°.');const zone=$('zone').value,a=calculate(instant,lat,lon,standard());const dstShift=$('dst').checked?(offset(instant)-standard())*Math.PI/12:0;const prague=isPragueDial(lat,lon,zone),dial=displayDial(a,prague,dstShift);$('dst').disabled=prague;$('dstNote').hidden=!prague;if(model){for(const name of ['Sun Disk','VariableHourNumbers']){const layer=part(name)||model.getObjectByName(name);if(layer)layer.rotation.y=-dial.skyRotation}const hours=model.getObjectByName("RomanHourNumerals");if(hours)hours.rotation.y=dial.numeralRotation;}$('time').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(instant);$('date').textContent=new Intl.DateTimeFormat('en-US',{timeZone:zone,dateStyle:'full'}).format(instant);$('place').textContent=locations[$('location').value]?.[0]||`${Math.abs(lat).toFixed(2)}° ${lat<0?"S":"N"}, ${Math.abs(lon).toFixed(2)}° ${lon<0?"W":"E"}`;$('decl').textContent=a.declination.toFixed(2)+'°';$('phase').textContent=Math.round(a.illumination*100)+'%';$('daylight').textContent=Math.floor(a.daylight)+'h '+Math.round((a.daylight%1)*60)+'m';if(model){const rays=part('SunRays');if(rays){rays.position.x=a.sunRadius*Math.sin(dial.sunAngle);rays.position.z=-a.sunRadius*Math.cos(dial.sunAngle)}const pointer=part('GoldHumanHand');if(pointer){pointer.rotation.set(-Math.PI/2,0,-dial.sunAngle);pointer.position.x=1.50*Math.sin(dial.sunAngle);pointer.position.z=-1.50*Math.cos(dial.sunAngle)}backplate(lat);updateCentralEarth(lat,lon);updateVariableHourLabels(lat);for(const name of ['AStroDISK','mONTH dISK']){let o=part(name);if(o)o.rotation.y=Math.PI-dial.zodiacAngle}for(const [name,angle]of [['Sun Hand',dial.sunAngle],['Moon Hand',dial.moonAngle],['Bohemia RINg',dial.sunsetAngle]]){let o=part(name);if(o)o.rotation.y=-angle}for(const [name,angle,r]of [['Sun Spere',dial.sunAngle,a.sunRadius],['Moon SPhere',dial.moonAngle,a.moonRadius]]){let o=part(name);if(o){o.position.x=r*Math.sin(angle);o.position.z=-r*Math.cos(angle)}}let moon=part('Moon SPhere');if(moon){const direction=moonLightVector(a.illumination,a.sunRadius*Math.sin(dial.sunAngle),-a.sunRadius*Math.cos(dial.sunAngle),a.moonRadius*Math.sin(dial.moonAngle),-a.moonRadius*Math.cos(dial.moonAngle));moon.traverse(o=>{if(o.userData.moonPhaseDirection)o.userData.moonPhaseDirection.set(...direction).transformDirection(model.matrixWorld)})}}window.clockState=a}catch(e){$('message').textContent=e.message}controls.update();if(explaining){if(highlight?.update)highlight.update();updateGuideValue()}renderer.render(scene,camera)}requestAnimationFrame(animate);
+const desktop=initDesktop({
+ getPlace:()=>({location:$('location').value,lat:Number($('lat').value),lon:Number($('lon').value),zone:$('zone').value,dst:$('dst').checked?'1':'0'}),
+ applyPlace:value=>{
+  const preset=locations[value.location];
+  if(preset){$('location').value=value.location;$('location').onchange()}
+  else if(value.location==='custom'){
+   const lat=Number(value.lat),lon=Number(value.lon);
+   if(value.lat!==undefined&&value.lon!==undefined&&validLocation({lat,lon,zone:value.zone})){
+    $('lat').value=lat;$('lon').value=lon;$('zone').value=value.zone;acceptedLatitude=lat;
+   }
+   $('location').value='custom';$('locationDetails').open=true;
+  }
+  if(value.dst!==undefined)$('dst').checked=value.dst!=='0';
+  rememberLocation();localInput();
+ },
+ onMode:active=>{
+  if(active){setLearning(false);mode(true);instant=new Date();controls.enableDamping=false;controls.reset();camera.position.set(0,7.4,0);controls.target.set(0,0,0);controls.update()}
+  controls.enabled=!active;controls.enableDamping=!active;
+  renderer.setPixelRatio(Math.min(devicePixelRatio,active?1.5:2));resize();
+ },
+ onEvent:countEvent
+});
+let lastDesktopFrame=0;
+function animate(now){requestAnimationFrame(animate);if(desktop.active){if(now-lastDesktopFrame<50)return;lastDesktopFrame=now;}const dt=Math.min((now-previous)/1000,.25);previous=now;if(live)instant=new Date();else if(playing){instant=new Date(+instant+dt*+$('speed').value*1000);if(demoEnd!==null&&+instant>=demoEnd){instant=new Date(demoEnd);demoEnd=null;playing=false;syncPlayback();localInput()}}try{let lat=+$('lat').value,lon=+$('lon').value;if(!Number.isFinite(lat)||lat<1||lat>66||!Number.isFinite(lon)||Math.abs(lon)>180)throw Error('Use a latitude from 1° to 66° north and longitude from −180° to 180°.');const zone=$('zone').value,a=calculate(instant,lat,lon,standard());const dstShift=$('dst').checked?(offset(instant)-standard())*Math.PI/12:0;const prague=isPragueDial(lat,lon,zone),dial=displayDial(a,prague,dstShift);$('dst').disabled=prague;$('dstNote').hidden=!prague;if(model){for(const name of ['Sun Disk','VariableHourNumbers']){const layer=part(name)||model.getObjectByName(name);if(layer)layer.rotation.y=-dial.skyRotation}const hours=model.getObjectByName("RomanHourNumerals");if(hours)hours.rotation.y=dial.numeralRotation;}$('time').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(instant);$('date').textContent=new Intl.DateTimeFormat('en-US',{timeZone:zone,dateStyle:'full'}).format(instant);$('place').textContent=locations[$('location').value]?.[0]||`${Math.abs(lat).toFixed(2)}° ${lat<0?"S":"N"}, ${Math.abs(lon).toFixed(2)}° ${lon<0?"W":"E"}`;$('decl').textContent=a.declination.toFixed(2)+'°';$('phase').textContent=Math.round(a.illumination*100)+'%';$('daylight').textContent=Math.floor(a.daylight)+'h '+Math.round((a.daylight%1)*60)+'m';if(model){const rays=part('SunRays');if(rays){rays.position.x=a.sunRadius*Math.sin(dial.sunAngle);rays.position.z=-a.sunRadius*Math.cos(dial.sunAngle)}const pointer=part('GoldHumanHand');if(pointer){pointer.rotation.set(-Math.PI/2,0,-dial.sunAngle);pointer.position.x=1.50*Math.sin(dial.sunAngle);pointer.position.z=-1.50*Math.cos(dial.sunAngle)}backplate(lat);updateCentralEarth(lat,lon);updateVariableHourLabels(lat);for(const name of ['AStroDISK','mONTH dISK']){let o=part(name);if(o)o.rotation.y=Math.PI-dial.zodiacAngle}for(const [name,angle]of [['Sun Hand',dial.sunAngle],['Moon Hand',dial.moonAngle],['Bohemia RINg',dial.sunsetAngle]]){let o=part(name);if(o)o.rotation.y=-angle}for(const [name,angle,r]of [['Sun Spere',dial.sunAngle,a.sunRadius],['Moon SPhere',dial.moonAngle,a.moonRadius]]){let o=part(name);if(o){o.position.x=r*Math.sin(angle);o.position.z=-r*Math.cos(angle)}}let moon=part('Moon SPhere');if(moon){const direction=moonLightVector(a.illumination,a.sunRadius*Math.sin(dial.sunAngle),-a.sunRadius*Math.cos(dial.sunAngle),a.moonRadius*Math.sin(dial.moonAngle),-a.moonRadius*Math.cos(dial.moonAngle));moon.traverse(o=>{if(o.userData.moonPhaseDirection)o.userData.moonPhaseDirection.set(...direction).transformDirection(model.matrixWorld)})}}window.clockState=a}catch(e){$('message').textContent=e.message}controls.update();if(explaining){if(highlight?.update)highlight.update();updateGuideValue()}desktop.updateReadout($('time').textContent,$('date').textContent,$('place').textContent);renderer.render(scene,camera)}requestAnimationFrame(animate);

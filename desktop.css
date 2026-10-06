@@ -1,0 +1,27 @@
+.desktop-section{border-top:1px solid #303947;margin-top:24px;padding-top:16px}
+.desktop-section button{width:100%}
+.desktop-settings{position:fixed;inset:0;z-index:1100;background:#050910c9;display:flex;align-items:center;justify-content:center;padding:20px}
+.desktop-settings-card{width:min(440px,100%);max-height:90dvh;overflow:auto;background:#151d28;border:1px solid #526177;border-radius:12px;padding:24px;box-shadow:0 20px 80px #0009}
+.desktop-settings-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.desktop-settings-heading h2{font:26px Georgia,serif;margin:0}
+.desktop-settings-heading button{padding:4px 12px;font-size:24px}
+.desktop-settings-card p{line-height:1.5;color:#bcc8d7;font-size:14px}
+.desktop-settings-card input[type=range]{padding:0;accent-color:#d6bb80}
+.desktop-actions{display:flex;gap:8px;margin-top:20px}
+.desktop-actions button{flex:1;font-size:14px}
+.desktop-mode{overflow:hidden;background:#10151d}
+.clock-page.desktop-mode>header,.clock-page.desktop-mode aside,.desktop-mode .caption{display:none}
+.clock-page.desktop-mode main{display:flex;align-items:center;justify-content:center;width:100vw;height:100dvh;max-width:none;padding:3vmin;margin:0}
+.clock-page.desktop-mode #stage{flex:none;width:min(var(--desktop-size,80vmin),94vw,84dvh);height:min(var(--desktop-size,80vmin),94vw,84dvh);min-height:0;overflow:visible;background:none}
+.desktop-mode[data-desktop-position=left] main{justify-content:flex-start}
+.desktop-mode[data-desktop-position=right] main{justify-content:flex-end}
+.desktop-mode[data-desktop-background=midnight]{background:radial-gradient(ellipse at center,#253347,#10151d 75%)}
+.desktop-mode[data-desktop-background=black]{background:#000}
+.desktop-mode[data-desktop-background=slate]{background:#243244}
+.desktop-readout{position:absolute;top:100%;left:0;width:100%;text-align:center;pointer-events:none;margin-top:-2vmin}
+#desktopTime{font-size:clamp(20px,3vmin,36px);font-variant-numeric:tabular-nums;color:#e6ce97}
+#desktopDate{font-size:clamp(11px,1.6vmin,16px);color:#bcc8d7;margin-top:4px}
+.desktop-toolbar{position:fixed;top:16px;right:16px;z-index:1000;display:flex;gap:8px;opacity:0;transition:opacity .2s}
+.desktop-awake .desktop-toolbar,.desktop-toolbar:hover,.desktop-toolbar:focus-within{opacity:1}
+.desktop-toolbar button{font-size:13px;background:#151d28e6}
+@media(max-width:450px){.desktop-settings{padding:12px}.desktop-settings-card{padding:18px}.desktop-actions{flex-direction:column}}
