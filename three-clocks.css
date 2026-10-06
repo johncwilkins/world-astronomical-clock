@@ -1,8 +1,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080e17;color:#e8d09d;font-family:system-ui,sans-serif}
-.three-clocks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;height:100dvh;gap:2vw;padding:2vw;background:radial-gradient(ellipse at 50% 40%,#1c293b,#080e17 78%)}
+.three-clocks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;height:100dvh;gap:1.5vw;padding:1.5vw;background:radial-gradient(ellipse at 50% 40%,#1c293b,#080e17 78%)}
 .clock-panel{min-width:0;display:flex;flex-direction:column;align-items:center}
-.clock-panel iframe{display:block;width:100%;height:min(72dvh,29.5vw);border:0;background:transparent;pointer-events:none}
+.clock-panel iframe{display:block;width:100%;height:min(84dvh,31vw);border:0;background:transparent;pointer-events:none}
 .clock-label{text-align:center;width:100%;padding-top:1.2vh;min-height:4vh}
 .clock-label h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(16px,2.25vh,38px);letter-spacing:.06em;margin:0 0 .8vh}
 @media(max-aspect-ratio:3/2){.three-clocks{gap:1vw;padding:1vw}.clock-panel iframe{height:31.5vw}.clock-label h1{font-size:clamp(12px,2.4vw,24px)}}
