@@ -19,14 +19,6 @@ function selectDaily(now) {
  url.search = new URLSearchParams({desktop:'1',location:selection.city,theme:selection.country==='is'?'iceland':`country-${selection.country}`,size:'95',readout:'0',position:'center',background:'black',dst:'1'}).toString();
  frame.src = url;
 }
-function update() {
- const now = new Date(); selectDaily(now);
- for (const panel of panels) {
-  const zone = panel.dataset.zone, output = panel.querySelector('time');
-  output.dateTime = now.toISOString();
-  output.textContent = new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);
-  panel.querySelector('.local-date').textContent = new Intl.DateTimeFormat('en-US',{timeZone:zone,weekday:'long',month:'long',day:'numeric'}).format(now);
- }
-}
+function update() { selectDaily(new Date()); }
 update(); setInterval(update,1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)update()});
