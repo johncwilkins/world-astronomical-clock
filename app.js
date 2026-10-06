@@ -1,6 +1,5 @@
-import {flagNumberColors} from './bohemian-flag.js';
 import {locations} from './locations.js';
-import {flagPixels} from './dial-flags.js?v=flag-ring-1';
+import {flagPixels} from './dial-flags.js?v=solid-dials-1';
 import {initDesktop} from './desktop.js';
 import {countEvent} from './analytics.js';
 import {moonLightVector} from './moon-phase.js';
@@ -31,10 +30,7 @@ function restoreLocation(){
 for(const id of ['location','lat','lon','zone'])$(id).addEventListener('change',rememberLocation);
 restoreLocation();
 const wallpaperPane=location.pathname.endsWith('/clock-pane.html');
-const paneParams=new URLSearchParams(location.search);
-const flagOnRing=wallpaperPane&&paneParams.get('flagRing')==='1';
-const ringFlag=flagOnRing?await flagPixels(paneParams.get('theme'),1024,false):null;
-const dialFlag=wallpaperPane&&!flagOnRing?await flagPixels(paneParams.get('theme')):null;
+const dialFlag=wallpaperPane?await flagPixels(new URLSearchParams(location.search).get('theme')):null;
 const c=document.createElement('canvas');c.width=c.height=1024;const ctx=c.getContext('2d'),texture=new T.CanvasTexture(c);texture.colorSpace=T.SRGBColorSpace;texture.flipY=false;
 function backplate(lat){const key=lat.toFixed(4);if(lastPlate===key)return;lastPlate=key;const n=1024,R=1.6,phi=lat*Math.PI/180,im=ctx.createImageData(n,n);for(let j=0;j<n;j++)for(let i=0;i<n;i++){let x=(i/n-.5)*2*R,y=(.5-j/n)*2*R,r2=x*x+y*y,sdec=(r2-1)/(r2+1),cdec=2*Math.sqrt(r2)/(r2+1),cosH=r2?y/Math.sqrt(r2):0,alt=Math.asin(Math.max(-1,Math.min(1,Math.sin(phi)*sdec+Math.cos(phi)*cdec*cosH)))*180/Math.PI,col=(r2<.6565*.6565||alt>=0)?[8,24,92]:alt>=-18?[158,19,53]:[5,7,14],k=4*(j*n+i);if(dialFlag&&(r2<.6565*.6565||alt>=0)){im.data.set([dialFlag[k],dialFlag[k+1],dialFlag[k+2],255],k)}else im.data.set([...col,255],k)}ctx.putImageData(im,0,0);ctx.strokeStyle='#bca565';ctx.lineWidth=2;function path(points){ctx.beginPath();points.forEach(([x,y],i)=>{const X=512+x/R*512,Y=512-y/R*512;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.stroke()}for(const r of [.6565,1,1.5235]){ctx.beginPath();ctx.arc(512,512,r/R*512,0,Math.PI*2);ctx.stroke()}ctx.strokeStyle='#6ab8c6';for(let k=1;k<12;k++){let pts=[];for(let d=-23.44;d<=23.44;d+=.25){let r=Math.tan(Math.PI/4+d*Math.PI/360),q=-Math.tan(phi)*Math.tan(d*Math.PI/180);if(Math.abs(q)>1)continue;let H=Math.acos(q),a=-H+k*2*H/12;pts.push([r*Math.sin(a),r*Math.cos(a)])}path(pts)}path([[0,-R],[0,R]]);texture.needsUpdate=true;}
 function partKey(name){return name.toLowerCase().replace(/[^a-z0-9]/g,'').replace(/^moonnhand$/,'moonhand')}
@@ -62,14 +58,7 @@ function rebuildBohemianRing(){
  const old=part('Bohemia RINg');if(old)old.visible=false;
  const ring=new T.Group();ring.name='BohemianHourRing';
  const gold=new T.MeshStandardMaterial({color:0xe6c56c,metalness:.65,roughness:.32});
- let bandMaterial=new T.MeshBasicMaterial({color:0x000000,side:T.DoubleSide});
- if(ringFlag){
-  const flagCanvas=document.createElement('canvas');flagCanvas.width=flagCanvas.height=1024;
-  flagCanvas.getContext('2d').putImageData(new ImageData(ringFlag,1024,1024),0,0);
-  const flagMap=new T.CanvasTexture(flagCanvas);flagMap.colorSpace=T.SRGBColorSpace;
-  bandMaterial=new T.MeshBasicMaterial({map:flagMap,side:T.DoubleSide});
- }
- const band=new T.Mesh(new T.RingGeometry(1.61,1.91,160),bandMaterial);
+ const band=new T.Mesh(new T.RingGeometry(1.61,1.91,160),new T.MeshBasicMaterial({color:0x000000,side:T.DoubleSide}));
  band.rotation.x=-Math.PI/2;band.position.y=.011;ring.add(band);
  for(const radius of [1.61,1.91]){
   const border=new T.Mesh(new T.TorusGeometry(radius,.012,10,160),gold);
@@ -81,17 +70,7 @@ function rebuildBohemianRing(){
    const geometry=new TextGeometry(String(hour),{font,size:.17,depth:.018,curveSegments:8,bevelEnabled:true,bevelThickness:.001,bevelSize:.001,bevelSegments:2});
    geometry.computeBoundingBox();const b=geometry.boundingBox,w=b.max.x-b.min.x,h=b.max.y-b.min.y;
    geometry.translate(-(b.min.x+b.max.x)/2,-(b.min.y+b.max.y)/2,0);geometry.scale(Math.min(1,.25/w),.17/h,1);
-   const angle=(hour%24)*Math.PI/12;
-   let numeralMaterial=gold;
-   if(ringFlag){
-    const x=Math.round((.5+1.755*Math.sin(angle)/3.82)*1023),y=Math.round((.5-1.755*Math.cos(angle)/3.82)*1023);
-    const {color,outline:outlineColor}=flagNumberColors(ringFlag,1024,x,y);
-    numeralMaterial=new T.MeshBasicMaterial({color});
-    const outline=new T.Mesh(geometry.clone(),new T.MeshBasicMaterial({color:outlineColor}));
-    outline.geometry.scale(1.12,1.12,.6);outline.rotation.set(-Math.PI/2,0,-angle);
-    outline.position.set(1.755*Math.sin(angle),.013,-1.755*Math.cos(angle));ring.add(outline);
-   }
-   const numeral=new T.Mesh(geometry,numeralMaterial);
+   const numeral=new T.Mesh(geometry,gold),angle=(hour%24)*Math.PI/12;
    numeral.rotation.set(-Math.PI/2,0,-angle);numeral.position.set(1.755*Math.sin(angle),.014,-1.755*Math.cos(angle));
    numeral.name='BohemianHour_'+hour;ring.add(numeral);
   }
