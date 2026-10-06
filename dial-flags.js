@@ -1,12 +1,14 @@
 // Flag artwork used only by the unlisted three-clock wallpaper.
 // IHYC burgee reference: https://www.crwflags.com/Fotw/Flags/us~yihyc.html
-export const dialThemes = new Set(['ihyc', 'czech', 'iceland']);
+export const dialThemes = new Set(['ihyc', 'czech', 'iceland', 'gray']);
 
 export function drawDialFlag(ctx, theme, size) {
   if (!dialThemes.has(theme)) return false;
   const n = size;
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, n, n);
-  if (theme === 'czech') {
+  if (theme === 'gray') {
+    ctx.fillStyle = '#909da9'; ctx.fillRect(0, 0, n, n);
+  } else if (theme === 'czech') {
     ctx.fillStyle = '#d7141a'; ctx.fillRect(0, n / 2, n, n / 2);
     ctx.fillStyle = '#11457e';
     ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(n / 2, n / 2); ctx.lineTo(0, n); ctx.closePath(); ctx.fill();

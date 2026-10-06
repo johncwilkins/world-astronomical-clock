@@ -1,4 +1,4 @@
-import {flagPixels} from './dial-flags.js';
+import {flagPixels} from './dial-flags.js?v=three-clocks-2';
 import {initDesktop} from './desktop.js';
 import {countEvent} from './analytics.js';
 import {moonLightVector} from './moon-phase.js';
