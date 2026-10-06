@@ -16,7 +16,7 @@ function selectDaily(now) {
  const frame = dailyPanel.querySelector('iframe');
  frame.title = `Live ${name} astronomical clock with national flag`;
  const url = new URL('./clock-pane.html',location.href);
- url.search = new URLSearchParams({desktop:'1',location:selection.city,theme:selection.country==='is'?'iceland':`country-${selection.country}`,size:'95',readout:'0',position:'center',background:'black',dst:'1'}).toString();
+ url.search = new URLSearchParams({desktop:'1',location:selection.city,theme:selection.country==='is'?'iceland':`country-${selection.country}`,size:'95',flagRing:'1',readout:'0',position:'center',background:'black',dst:'1'}).toString();
  frame.src = url;
 }
 function update() { selectDaily(new Date()); }

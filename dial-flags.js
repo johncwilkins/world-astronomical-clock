@@ -2,7 +2,7 @@
 // IHYC burgee reference: https://www.crwflags.com/Fotw/Flags/us~yihyc.html
 export const dialThemes = new Set(['ihyc', 'czech', 'iceland', 'gray']);
 
-export function drawDialFlag(ctx, theme, size) {
+export function drawDialFlag(ctx, theme, size, soften = true) {
   if (!dialThemes.has(theme)) return false;
   const n = size;
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, n, n);
@@ -43,7 +43,7 @@ export function drawDialFlag(ctx, theme, size) {
     ctx.closePath(); ctx.fill(); ctx.restore();
   }
   // Slightly soften the bright white so the gold rings remain clear.
-  ctx.fillStyle = 'rgba(10,18,30,0.22)'; ctx.fillRect(0, 0, n, n);
+  if (soften) { ctx.fillStyle = 'rgba(10,18,30,0.22)'; ctx.fillRect(0, 0, n, n); }
   return true;
 }
 
@@ -59,7 +59,7 @@ function muteDailyFlag(pixels) {
   return pixels;
 }
 
-export async function flagPixels(theme, size = 1024) {
+export async function flagPixels(theme, size = 1024, muted = true) {
   const country = /^country-(us|eg|is|fi|no|gb|mx|pk|ca|it|in|kr|jp|cz|fr)$/.exec(theme);
   if (!country && !dialThemes.has(theme)) return null;
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
@@ -69,8 +69,8 @@ export async function flagPixels(theme, size = 1024) {
     img.src = new URL(`./flags/${country[1]}.png`,import.meta.url).href;
     await img.decode();
     ctx.drawImage(img,0,0,size,size);
-    ctx.fillStyle = 'rgba(10,18,30,0.22)';ctx.fillRect(0,0,size,size);
-  } else drawDialFlag(ctx, theme, size);
+    if (muted) { ctx.fillStyle = 'rgba(10,18,30,0.22)';ctx.fillRect(0,0,size,size); }
+  } else drawDialFlag(ctx, theme, size, muted);
   const pixels = ctx.getImageData(0, 0, size, size).data;
-  return country || theme === 'iceland' ? muteDailyFlag(pixels) : pixels;
+  return muted && (country || theme === 'iceland') ? muteDailyFlag(pixels) : pixels;
 }
