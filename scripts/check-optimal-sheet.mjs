@@ -1,2 +1,0 @@
-import{bestSheet}from'../racers.js';import{advanceBoat}from'../physics.js';
-let cases=0;for(const speed of [.05,1,3,5])for(const wind of [0,3,6,12,25])for(let angle=-180;angle<=180;angle+=2.5)for(const gust of [0,.8]){let best=5,force=-1;for(let sheet=5;sheet<=90;sheet++){const f=advanceBoat(speed,angle,wind,sheet,0,0,gust).force;if(f>force){best=sheet;force=f}}const got=bestSheet(speed,angle,wind,0,gust);if(got!==best)throw Error(JSON.stringify({speed,wind,angle,gust,best,got}));cases++}console.log({optimalSheetEquivalentCases:cases});
