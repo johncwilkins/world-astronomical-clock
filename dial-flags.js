@@ -47,21 +47,30 @@ export function drawDialFlag(ctx, theme, size) {
   return true;
 }
 
+// Reduce daily flag colors and contrast while keeping their shapes recognizable.
+function muteDailyFlag(pixels) {
+  for (let k = 0; k < pixels.length; k += 4) {
+    const r = pixels[k], g = pixels[k+1], b = pixels[k+2];
+    const gray = .2126*r + .7152*g + .0722*b;
+    for (let channel = 0; channel < 3; channel++) {
+      pixels[k+channel] = Math.round(104 + (gray-128)*.32 + (pixels[k+channel]-gray)*.06);
+    }
+  }
+  return pixels;
+}
+
 export async function flagPixels(theme, size = 1024) {
   const country = /^country-(us|eg|is|fi|no|gb|mx|pk|ca|it|in|kr|jp|cz|fr)$/.exec(theme);
+  if (!country && !dialThemes.has(theme)) return null;
+  const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
   if (country) {
     const img = new Image();
     img.src = new URL(`./flags/${country[1]}.png`,import.meta.url).href;
     await img.decode();
-    const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
-    const ctx = canvas.getContext('2d');
     ctx.drawImage(img,0,0,size,size);
     ctx.fillStyle = 'rgba(10,18,30,0.22)';ctx.fillRect(0,0,size,size);
-    return ctx.getImageData(0,0,size,size).data;
-  }
-  if (!dialThemes.has(theme)) return null;
-  const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  drawDialFlag(ctx, theme, size);
-  return ctx.getImageData(0, 0, size, size).data;
+  } else drawDialFlag(ctx, theme, size);
+  const pixels = ctx.getImageData(0, 0, size, size).data;
+  return country || theme === 'iceland' ? muteDailyFlag(pixels) : pixels;
 }

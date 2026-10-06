@@ -1,5 +1,5 @@
 import {locations} from './locations.js';
-import {flagPixels} from './dial-flags.js?v=three-clocks-3';
+import {flagPixels} from './dial-flags.js?v=muted-flags-1';
 import {initDesktop} from './desktop.js';
 import {countEvent} from './analytics.js';
 import {moonLightVector} from './moon-phase.js';
