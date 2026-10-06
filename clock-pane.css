@@ -1,0 +1,5 @@
+/* This internal frame is used only by the three-clock wallpaper. */
+html,body.wallpaper-pane{background:transparent!important;overflow:hidden}
+body.wallpaper-pane>header,body.wallpaper-pane aside,body.wallpaper-pane .caption,body.wallpaper-pane #desktopToolbar,body.wallpaper-pane #desktopSettings,body.wallpaper-pane #desktopReadout{display:none!important}
+.clock-page.wallpaper-pane main{display:flex;width:100vw;height:100dvh;padding:0;align-items:center;justify-content:center;background:transparent}
+.clock-page.wallpaper-pane #stage{width:min(100vw,100dvh);height:min(100vw,100dvh);min-height:0;background:transparent;overflow:hidden}

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><title>Prague Astronomical Clock (Orloj) — Interactive Simulator</title><meta name="description" content="Explore an interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Change the date and location, and watch its Sun, Moon, and zodiac ring move."><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="./desktop.css?v=1"><link rel="canonical" href="https://worldastronomicalclock.com/">
-<meta name="robots" content="index,follow">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><title>Prague Astronomical Clock (Orloj) — Interactive Simulator</title><meta name="description" content="Explore an interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Change the date and location, and watch its Sun, Moon, and zodiac ring move."><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="./desktop.css?v=1"><link rel="stylesheet" href="./clock-pane.css">
+<meta name="robots" content="noindex,nofollow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="World Astronomical Clock">
 <meta property="og:title" content="Prague Astronomical Clock (Orloj) — Interactive 3D Simulator">
@@ -10,7 +10,7 @@
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"World Astronomical Clock: Prague Orloj Simulator","applicationCategory":"EducationalApplication","operatingSystem":"Web browser","isAccessibleForFree":true,"url":"https://worldastronomicalclock.com/","description":"An interactive 3D model inspired by the Prague Astronomical Clock (Orloj). Choose a location and date, then watch the Sun, Moon, zodiac ring, and dial features move as time passes."}</script>
 </head>
-<body class="clock-page">
+<body class="clock-page wallpaper-pane">
 <header>Astronomical Clock<div class="header-actions"><button id="explainToggle" aria-pressed="false" aria-controls="explainPanel">Learn the dial</button><button id="reset">Front view</button><a class="header-link" href="./about.html">About</a></div></header>
 <main>
 <section id="stage" aria-label="Interactive astronomical clock"><div id="loading">Loading your clock…</div><div id="desktopReadout" class="desktop-readout" hidden><div id="desktopTime"></div><div id="desktopDate"></div></div><p class="caption">Drag to tilt · Pinch or scroll to zoom</p></section>

@@ -47,7 +47,9 @@ export function initDesktop({getPlace, applyPlace, onMode, onEvent}) {
     document.body.dataset.desktopBackground = config.background;
     $('desktopReadout').hidden = !active || !config.readout;
     $('desktopSizeValue').textContent = `${config.size}%`;
-    try { localStorage.setItem('astronomical-clock.desktop', JSON.stringify(config)); } catch {}
+    if (!location.pathname.endsWith('/clock-pane.html')) {
+      try { localStorage.setItem('astronomical-clock.desktop', JSON.stringify(config)); } catch {}
+    }
   }
   function fill() {
     $('desktopSize').value = config.size;
